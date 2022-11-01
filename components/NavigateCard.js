@@ -5,7 +5,7 @@ import {
   SafeAreaView,
   TouchableOpacity,
 } from "react-native";
-import React from "react";
+import React, { useRef } from "react";
 import tw from "twrnc";
 import { GooglePlacesAutocomplete } from "react-native-google-places-autocomplete";
 import { GOOGLE_MAPS_APIKEY } from "@env";
@@ -21,12 +21,27 @@ const NavigateCard = () => {
 
   const navigation = useNavigation();
 
+  // this is used to set the value of the search bar if user clicks on home or work
+  const ref = useRef();
+
+  // pass this function down to NavFavourites, this is where the desintation is set
+  const onClick = (location, geometry) => {
+    ref.current?.setAddressText(location);
+    // send the data to the data layer
+    dispatch(
+      setDestination({
+        location: geometry.location,
+        description: location,
+      })
+    );
+  };
   return (
     <SafeAreaView style={tw`bg-white flex-1`}>
       <Text style={tw`text-center py-5 text-xl`}>Good Morning, Sean</Text>
       <View style={tw`border-t border-gray-200 flex-shrink`}>
         <View>
           <GooglePlacesAutocomplete
+            ref={ref}
             placeholder="Where to?"
             styles={toInputBoxStyles}
             fetchDetails={true}
@@ -53,7 +68,7 @@ const NavigateCard = () => {
             }}
           />
         </View>
-        <NavFavourites />
+        <NavFavourites onClick={onClick} />
       </View>
       <View
         style={tw`flex-row bg-white justify-evenly  py-2 mt-auto border-t border-gray-100`}

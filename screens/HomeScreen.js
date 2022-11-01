@@ -1,5 +1,5 @@
 import { StyleSheet, Text, View, SafeAreaView, Image } from "react-native";
-import React from "react";
+import React, { useRef } from "react";
 import tw from "twrnc";
 import NavOptions from "../components/NavOptions";
 import { GooglePlacesAutocomplete } from "react-native-google-places-autocomplete";
@@ -11,6 +11,22 @@ import NavFavourites from "../components/NavFavourites";
 const HomeScreen = () => {
   // dispatch all the relevant information to the data layer in redux (information such as lat and long)
   const dispatch = useDispatch();
+
+  // this is used to set the value of the search bar if user clicks on home or work
+  const ref = useRef();
+
+  // pass this function down to NavFavourites
+  const onClick = (location, geometry) => {
+    ref.current?.setAddressText(location);
+    // send the data to the data layer
+    dispatch(
+      setOrigin({
+        location: geometry.location,
+        description: location,
+      })
+    );
+    dispatch(setDestination(null));
+  };
 
   return (
     <SafeAreaView style={tw`bg-white h-full`}>
@@ -27,6 +43,7 @@ const HomeScreen = () => {
         />
 
         <GooglePlacesAutocomplete
+          ref={ref}
           styles={{
             container: {
               flex: 0,
@@ -36,6 +53,8 @@ const HomeScreen = () => {
             },
           }}
           onPress={(data, details = null) => {
+            console.log("this is location", details.geometry.location);
+            console.log("this is description", data.description);
             dispatch(
               setOrigin({
                 location: details.geometry.location,
@@ -58,7 +77,7 @@ const HomeScreen = () => {
         />
 
         <NavOptions />
-        <NavFavourites />
+        <NavFavourites onClick={onClick} />
       </View>
     </SafeAreaView>
   );

@@ -1,10 +1,4 @@
-import {
-  StyleSheet,
-  Text,
-  View,
-  SafeAreaView,
-  TouchableOpacity,
-} from "react-native";
+import { StyleSheet, View, TouchableOpacity } from "react-native";
 import React from "react";
 import tw from "twrnc";
 import Map from "../components/Map";

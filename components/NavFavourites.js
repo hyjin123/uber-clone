@@ -14,17 +14,21 @@ const data = [
     id: "123",
     icon: "home",
     location: "Home",
-    destination: "Code Street, London, UK",
+    destination: "Toronto, ON, Canada",
+    geometry: { location: { lat: 43.653226, lng: -79.3831843 } },
   },
   {
     id: "456",
     icon: "briefcase",
     location: "Work",
-    destination: "London Eye, London, UK",
+    destination: "Mississauga, ON, Canada",
+    geometry: { location: { lat: 43.5890452, lng: -79.6441198 } },
   },
 ];
 
-const NavFavourites = () => {
+const NavFavourites = (props) => {
+  const { onClick } = props;
+
   return (
     <FlatList
       data={data}
@@ -33,7 +37,10 @@ const NavFavourites = () => {
         <View style={[tw`bg-gray-500`, { height: 0.5 }]} />
       )}
       renderItem={({ item }) => (
-        <TouchableOpacity style={tw`flex-row items-center p-5`}>
+        <TouchableOpacity
+          style={tw`flex-row items-center p-5`}
+          onPress={() => onClick(item.destination, item.geometry)}
+        >
           <Icon
             style={tw`mr-4 rounded-full bg-gray-300 p-3`}
             name={item.icon}
